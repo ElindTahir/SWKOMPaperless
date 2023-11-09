@@ -1,0 +1,11 @@
+﻿version: '3.8'
+
+services:
+  npaperless.services:
+    image: npaperless.services
+    build:
+      context: .
+      dockerfile: NPaperless.Services/Dockerfile
+    ports:
+      - "8081:8081"  
+
