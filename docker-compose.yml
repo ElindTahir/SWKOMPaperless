@@ -7,5 +7,12 @@ services:
       context: .
       dockerfile: NPaperless.Services/Dockerfile
     ports:
-      - "8081:8081"  
+      - "8081:8081"
 
+  npaperless.webui:
+    image: npaperless.webui
+    build:
+      context: .
+      dockerfile: NPaperless.WebUI/Dockerfile
+    ports:
+      - "8000:8000"

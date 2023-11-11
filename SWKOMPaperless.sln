@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPaperless.WebUI", "NPaperless.WebUI\NPaperless.WebUI.csproj", "{3D4F7C54-DD36-4989-BDE0-EEC5C399EDB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,5 +19,9 @@ Global
 		{CAD346BB-0FDD-4602-AD2A-6EB8E010236E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAD346BB-0FDD-4602-AD2A-6EB8E010236E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAD346BB-0FDD-4602-AD2A-6EB8E010236E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D4F7C54-DD36-4989-BDE0-EEC5C399EDB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D4F7C54-DD36-4989-BDE0-EEC5C399EDB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D4F7C54-DD36-4989-BDE0-EEC5C399EDB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D4F7C54-DD36-4989-BDE0-EEC5C399EDB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
