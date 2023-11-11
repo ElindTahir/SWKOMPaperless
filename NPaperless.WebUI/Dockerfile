@@ -5,11 +5,22 @@ WORKDIR /app
 # Use SDK image to build the application
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["NPaperless.WebUI.csproj", "./"]
-RUN dotnet restore "NPaperless.WebUI.csproj"
+
+# Copy the csproj file from the specific project directory
+# Adjust this path according to your solution structure
+COPY ["NPaperless.WebUI/NPaperless.WebUI.csproj", "./NPaperless.WebUI/"]
+
+# Run dotnet restore
+RUN dotnet restore "NPaperless.WebUI/NPaperless.WebUI.csproj"
 
 # Copy the rest of the source code into the image
-COPY . .
+# Again, adjust these paths as per your solution structure
+COPY ["NPaperless.WebUI/", "NPaperless.WebUI/"]
+
+# Set the work directory to the project directory
+WORKDIR "NPaperless.WebUI"
+
+# Build the project
 RUN dotnet build "NPaperless.WebUI.csproj" -c Release -o /app/build
 
 # Publish the application

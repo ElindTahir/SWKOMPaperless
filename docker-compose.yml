@@ -1,5 +1,4 @@
 ﻿version: '3.8'
-
 services:
   npaperless.services:
     image: npaperless.services
@@ -18,6 +17,36 @@ services:
       dockerfile: NPaperless.WebUI/Dockerfile
     ports:
       - "8000:8000"
+    networks:
+      - npaperless-network
+
+  npaperless.dataaccess.entities:
+    image: npaperless.dataaccess.entities
+    build:
+      context: .
+      dockerfile: NPaperless.DataAccess.Entities/Dockerfile
+    ports:
+      - "5000:5000"
+    networks:
+      - npaperless-network
+
+  npaperless.dataaccess.interfaces:
+    image: npaperless.dataaccess.interfaces
+    build:
+      context: .
+      dockerfile: NPaperless.DataAccess.Interfaces/Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - npaperless-network
+
+  npaperless.dataaccess.sql:
+    image: npaperless.dataaccess.sql
+    build:
+      context: .
+      dockerfile: NPaperless.DataAccess.Sql/Dockerfile
+    ports:
+      - "1500:1500"
     networks:
       - npaperless-network
 
