@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.Extensions.DependencyInjection;
 using NPaperless.WebUI.Models;
+using AutoMapper;
 
 internal class Program
 {
@@ -15,13 +17,27 @@ internal class Program
 
         builder.Services.AddCors(options =>
         {
-           options.AddDefaultPolicy(builder =>
-           {
-               builder.AllowAnyOrigin()
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
-           });
-         });
+            });
+        });
+
+        // Add HttpClient factory
+        builder.Services.AddHttpClient("NPaperlessAPI", client =>
+        {
+            // Configure the client with the base address for the REST API service
+            client.BaseAddress = new Uri("http://npaperless.services:8081/");
+        });
+
+        builder.Services.AddAutoMapper(cfg =>
+        {
+            cfg.CreateMap<DocumentType, NewDocumentType>().ReverseMap();
+            cfg.CreateMap<Tag, NewTag>().ReverseMap();
+            cfg.CreateMap<Correspondent, NewCorrespondent>().ReverseMap();
+        });
 
         builder.Services.AddSpaStaticFiles(configuration =>
         {
@@ -41,28 +57,16 @@ internal class Program
             });
         }
 
-        builder.Services.AddAutoMapper(cfg =>
-        {
-            cfg.CreateMap<DocumentType, NewDocumentType>().ReverseMap();
-            cfg.CreateMap<Tag, NewTag>().ReverseMap();
-            cfg.CreateMap<Correspondent, NewCorrespondent>().ReverseMap();
-        });
-
         var app = builder.Build();
 
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
         app.UseCors();
-
-        // app.Use((context, next) =>
-        // {
-        //     context.Request.EnableBuffering();
-        //     var bodyAsText = new System.IO.StreamReader(context.Request.Body).ReadToEndAsync().Result;
-        //     System.Console.WriteLine(bodyAsText);
-        //     context.Request.Body.Position = 0;
-        //     return next();
-        // });
-
-        app.UseWebSockets();
-
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
@@ -73,18 +77,19 @@ internal class Program
         app.UseDefaultFiles();
         app.UseStaticFiles();
 
-        // Configure the HTTP request pipeline.
+        // If the environment is development, use HTTP logging
         if (app.Environment.IsDevelopment())
         {
             app.UseHttpLogging();
-            app.UseSwagger();
-            app.UseSwaggerUI();
-            app.UseRouteDebugger();
         }
 
-        // app.UseHttpsRedirection();
-
         app.UseAuthorization();
+
+        // Use the SPA static files in production
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseSpaStaticFiles();
+        }
 
         app.Run();
     }
