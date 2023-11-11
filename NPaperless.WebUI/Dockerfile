@@ -5,16 +5,22 @@ WORKDIR /app
 # Use SDK image to build the application
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["NPaperless.WebUI.csproj", "./"]
-RUN dotnet restore "NPaperless.WebUI.csproj"
 
-# Copy the rest of the source code into the image
+# Copy csproj files separately to cache restored packages
+COPY ["NPaperless.WebUI/NPaperless.WebUI.csproj", "NPaperless.WebUI/"]
+COPY ["NPaperless.Services/NPaperless.Services.csproj", "NPaperless.Services/"]
+COPY ["NPaperless.DTOs/NPaperless.DTOs.csproj", "NPaperless.DTOs/"]
+
+# Restore all dependencies
+RUN dotnet restore "NPaperless.WebUI/NPaperless.WebUI.csproj"
+
+# Copy the project files and build our release
 COPY . .
-RUN dotnet build "NPaperless.WebUI.csproj" -c Release -o /app/build
+RUN dotnet build "NPaperless.WebUI/NPaperless.WebUI.csproj" -c Release -o /app/build
 
 # Publish the application
 FROM build AS publish
-RUN dotnet publish "NPaperless.WebUI.csproj" -c Release -o /app/publish
+RUN dotnet publish "NPaperless.WebUI/NPaperless.WebUI.csproj" -c Release -o /app/publish
 
 # Final stage/image
 FROM base AS final
