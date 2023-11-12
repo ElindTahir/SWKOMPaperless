@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.DependencyInjection;
 using NPaperless.WebUI.Models;
 using AutoMapper;
+using FizzWare.NBuilder;
 
 internal class Program
 {
@@ -26,11 +27,13 @@ internal class Program
         });
 
         // Add HttpClient factory
-        builder.Services.AddHttpClient("NPaperlessAPI", client =>
-        {
+        //builder.Services.AddHttpClient("NPaperlessAPI", client =>
+        //{
             // Configure the client with the base address for the REST API service
-            client.BaseAddress = new Uri("http://npaperless.services:8081/");
-        });
+            //client.BaseAddress = new Uri("http://npaperless.services:8081/");
+        //});
+        
+        builder.Services.AddHttpClient();
 
         builder.Services.AddAutoMapper(cfg =>
         {

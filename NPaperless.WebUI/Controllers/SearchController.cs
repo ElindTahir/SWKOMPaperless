@@ -1,27 +1,40 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using FizzWare.NBuilder;
+using System;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-namespace NPaperless.WebUI.Controllers;
-
-[ApiController]
-[Route("/api/search/")]
-public partial class SearchController : ControllerBase
+namespace NPaperless.WebUI.Controllers
 {
-    private ILogger<SearchController> _logger;
-
-    public SearchController(ILogger<SearchController> logger)
+    [ApiController]
+    [Route("/api/search/")]
+    public class SearchController : ControllerBase
     {
-        _logger = logger;
-    }
+        private readonly ILogger<SearchController> _logger;
+        private readonly HttpClient _httpClient;
 
-    [HttpGet("autocomplete/", Name = "AutoComplete")]
-    public IActionResult AutoComplete([FromQuery]string term, [FromQuery]int limit)
-    {
-        var generator = new RandomGenerator();
-        
-        return this.Ok( 
-            Enumerable.Range(0, 10)
-                .Select(el => generator.Phrase(10)
-        ));
+        public SearchController(ILogger<SearchController> logger, HttpClient httpClient)
+        {
+            _logger = logger;
+            _httpClient = httpClient;
+        }
+
+        [HttpGet("autocomplete/", Name = "AutoComplete")]
+        public async Task<IActionResult> AutoComplete([FromQuery]string term, [FromQuery]int limit = 10)
+        {
+            var response = await _httpClient.GetAsync($"api/search/autocomplete?term={term}&limit={limit}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var autoCompleteResults = JsonSerializer.Deserialize<List<string>>(content);
+                return Ok(autoCompleteResults);
+            }
+            else
+            {
+                _logger.LogError($"Error calling REST API: {response.ReasonPhrase}");
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
+        }
     }
 }

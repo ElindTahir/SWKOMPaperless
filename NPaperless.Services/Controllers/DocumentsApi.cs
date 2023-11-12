@@ -6,23 +6,33 @@ using Microsoft.Extensions.Logging;
 using NPaperless.Services.DTOs;
 
 
+
 namespace NPaperless.Services.Controllers
 {
     [ApiController]
-    public class DocumentsApiController : ControllerBase
+    public class DocumentsApi : ControllerBase
     {
-        private readonly ILogger<DocumentsApiController> _logger;
+        private readonly ILogger<DocumentsApi> _logger;
 
-        public DocumentsApiController(ILogger<DocumentsApiController> logger)
+        public DocumentsApi(ILogger<DocumentsApi> logger)
         {
             _logger = logger;
         }
 
         [HttpPost]
         [Route("/api/documents")]
-        public IActionResult UploadDocument([FromBody]DocumentsDTO.NewDocument newDocument)
+        public IActionResult UploadDocument([FromBody]DocumentDTO newDocument)
         {
             _logger.LogInformation("Received request to upload document: {@NewDocument}", newDocument);
+            // Your logic here
+            throw new NotImplementedException();
+        }
+        
+        [HttpGet]
+        [Route("/api/documents")]
+        public IActionResult GetDocuments([FromQuery]int? page, [FromQuery]int? page_size, [FromQuery]string? query, [FromQuery]string ordering, [FromQuery(Name = "tags__id__all")]List<int>? tagsIdAll, [FromQuery(Name = "document_type__id")]int? documentTypeId, [FromQuery(Name = "correspondent__id")]int? correspondent__id, [FromQuery]bool? truncate_content)
+        {
+            _logger.LogInformation("Received request to get documents with query parameters.");
             // Your logic here
             throw new NotImplementedException();
         }
@@ -81,18 +91,9 @@ namespace NPaperless.Services.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpGet]
-        [Route("/api/documents")]
-        public IActionResult GetDocuments([FromQuery]int? page, [FromQuery]int? pageSize, [FromQuery]string query, [FromQuery]string ordering, [FromQuery(Name = "tags__id__all")]List<int> tagsIdAll, [FromQuery(Name = "document_type__id")]int? documentTypeId, [FromQuery(Name = "correspondent__id")]int? correspondentId, [FromQuery]bool? truncateContent)
-        {
-            _logger.LogInformation("Received request to get documents with query parameters.");
-            // Your logic here
-            throw new NotImplementedException();
-        }
-
         [HttpPut]
         [Route("/api/documents/{id}")]
-        public IActionResult UpdateDocument([FromRoute][Required]int id, [FromBody]DocumentsDTO.UpdateDocument document)
+        public IActionResult UpdateDocument([FromRoute][Required]int id, [FromBody]DocumentDTO document)
         {
             _logger.LogInformation("Received request to update document with ID: {Id}", id);
             // Your logic here

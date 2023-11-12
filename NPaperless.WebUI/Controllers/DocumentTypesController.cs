@@ -1,57 +1,93 @@
 using AutoMapper;
-using FizzWare.NBuilder;
 using Microsoft.AspNetCore.Mvc;
 using NPaperless.WebUI.Models;
+using System;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 
-
-namespace NPaperless.WebUI.Controllers;
-
-[ApiController]
-[Route("/api/document_types/")]
-public class DocumentTypesController : ControllerBase
+namespace NPaperless.WebUI.Controllers
 {
-    private ILogger<DocumentTypesController> _logger;
-    private IMapper _mapper;
-
-    public DocumentTypesController(IMapper mapper, ILogger<DocumentTypesController> logger)
+    [ApiController]
+    [Route("/api/document_types/")]
+    public class DocumentTypesController : ControllerBase
     {
-        _mapper = mapper;
-        _logger = logger;
-    }
+        private readonly ILogger<DocumentTypesController> _logger;
+        private readonly IMapper _mapper;
+        private readonly HttpClient _httpClient;
 
-    [HttpGet(Name = "GetDocumentTypes")]
-    public IActionResult GetDocumentTypes([FromQuery] GenericFilterModel filter)
-    {
-        Random r = new Random();
-        return Ok(new ListResponse<DocumentType>()
+        public DocumentTypesController(IMapper mapper, ILogger<DocumentTypesController> logger, HttpClient httpClient)
         {
-            Count = 6,
-            Results = Builder<DocumentType>.CreateListOfSize(6)
-                .All().With(p => p.MatchingAlgorithm = r.Next(1, 6))
-                .Build()
-        });
-    }
+            _mapper = mapper;
+            _logger = logger;
+            _httpClient = httpClient;
+            
+        }
 
-    [HttpPost(Name = "CreateDocumentType")]
-    public IActionResult CreateDocumentType([FromBody] NewDocumentType documentType)
-    {
-        var docType = _mapper.Map<DocumentType>(documentType);
+        [HttpGet(Name = "GetDocumentTypes")]
+        public async Task<IActionResult> GetDocumentTypes()
+        {
+            var response = await _httpClient.GetAsync("api/document_types");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var documentTypes = JsonSerializer.Deserialize<List<DocumentType>>(content);
+                return Ok(documentTypes);
+            }
+            else
+            {
+                _logger.LogError($"Error calling REST API: {response.ReasonPhrase}");
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
+        }
 
-        docType.Id = 1;
-        docType.Slug = "foo";
+        [HttpPost(Name = "CreateDocumentType")]
+        public async Task<IActionResult> CreateDocumentType([FromBody] NewDocumentType documentType)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(documentType), System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("api/document_types", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var readContent = await response.Content.ReadAsStringAsync();
+                var createdDocumentType = JsonSerializer.Deserialize<DocumentType>(readContent);
+                return Created($"/api/document_types/{createdDocumentType.Id}", createdDocumentType);
+            }
+            else
+            {
+                _logger.LogError($"Error calling REST API: {response.ReasonPhrase}");
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
+        }
 
-        return Created($"/api/document_types/{docType.Id}", docType);
-    }
+        [HttpPut("{id:int}", Name = "UpdateDocumentType")]
+        public async Task<IActionResult> UpdateDocumentType([FromRoute] int id, [FromBody] DocumentType documentType)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(documentType), System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync($"api/document_types/{id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok(documentType);
+            }
+            else
+            {
+                _logger.LogError($"Error calling REST API: {response.ReasonPhrase}");
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
+        }
 
-    [HttpPut("{id:int}", Name = "UpdateDocumentType")]
-    public IActionResult UpdateDocumentType([FromRoute] int id, [FromBody] DocumentType documentType)
-    {
-        return Ok(documentType);
-    }
-
-    [HttpDelete("{id:int}", Name = "DeleteDocumentType")]
-    public IActionResult DeleteDocumentType([FromRoute] int id)
-    {
-        return NoContent();
+        [HttpDelete("{id:int}", Name = "DeleteDocumentType")]
+        public async Task<IActionResult> DeleteDocumentType([FromRoute] int id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/document_types/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                return NoContent();
+            }
+            else
+            {
+                _logger.LogError($"Error calling REST API: {response.ReasonPhrase}");
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
+        }
     }
 }

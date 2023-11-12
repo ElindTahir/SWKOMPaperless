@@ -18,9 +18,9 @@ namespace NPaperless.Services.Controllers
 
         [HttpPost]
         [Route("/api/correspondents")]
-        public virtual IActionResult CreateCorrespondent([FromBody]NewCorrespondent newCorrespondent)
+        public virtual IActionResult CreateCorrespondent([FromBody]NewCorrespondentDTO newCorrespondent)
         {
-            _logger.LogInformation("Creating a new correspondent: {@NewCorrespondent}", newCorrespondent);
+            _logger.LogInformation("Creating a new correspondent: {@NewCorrespondentDTO}", newCorrespondent);
             // Simulate some work
             _logger.LogInformation("Correspondent created successfully.");
             return StatusCode(200);

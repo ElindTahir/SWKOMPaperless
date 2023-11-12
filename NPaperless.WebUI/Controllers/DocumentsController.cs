@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
-using NPaperless.Services.DTOs;
 using Document = NPaperless.WebUI.Models.Document;
 
 namespace NPaperless.WebUI.Controllers
@@ -15,10 +14,13 @@ namespace NPaperless.WebUI.Controllers
         private readonly ILogger<DocumentsController> _logger;
         private readonly HttpClient _httpClient;
 
-        public DocumentsController(ILogger<DocumentsController> logger, IHttpClientFactory httpClientFactory)
+        public DocumentsController(ILogger<DocumentsController> logger, HttpClient httpClient)
         {
             _logger = logger;
-            _httpClient = httpClientFactory.CreateClient("NPaperlessAPI"); // Ensure this client is configured in Startup.cs
+            //_httpClient = httpClientFactory.CreateClient("NPaperlessAPI"); // Ensure this client is configured in Startup.cs
+            _httpClient = httpClient;
+            //Diese Zeile ist eine missgeburt
+            //_httpClient.BaseAddress = new Uri("http://npaperless.services:8081/");
         }
 
         [HttpGet]
@@ -40,7 +42,7 @@ namespace NPaperless.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDocument([FromBody] DocumentsDTO.NewDocument newDocument)
+        public async Task<IActionResult> CreateDocument([FromBody] Document newDocument)
         {
             _logger.LogInformation("Creating a new document: {Title}", newDocument.Title);
             var jsonContent = JsonSerializer.Serialize(newDocument);
@@ -80,7 +82,7 @@ namespace NPaperless.WebUI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDocument(int id, [FromBody] DocumentsDTO.UpdateDocument updateDocument)
+        public async Task<IActionResult> UpdateDocument(int id, [FromBody] Document updateDocument)
         {
             _logger.LogInformation("Updating document with ID: {Id}", id);
             var jsonContent = JsonSerializer.Serialize(updateDocument);

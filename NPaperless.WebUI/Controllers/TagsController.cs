@@ -1,62 +1,56 @@
 using Microsoft.AspNetCore.Mvc;
-using FizzWare.NBuilder;
 using AutoMapper;
 using NPaperless.WebUI.Models;
+using System;
 
-namespace NPaperless.WebUI.Controllers;
-
-[ApiController]
-[Route("/api/tags/")]
-// [Route("[controller]")]
-public class TagsController : ControllerBase
+namespace NPaperless.WebUI.Controllers
 {
-    private ILogger<TagsController> _logger;
-    private readonly IMapper _mapper;
-
-    public TagsController(IMapper mapper, ILogger<TagsController> logger)
+    [ApiController]
+    [Route("/api/tags/")]
+    public class TagsController : ControllerBase
     {
-        _mapper = mapper;
-        _logger = logger;
-    }
+        private readonly ILogger<TagsController> _logger;
+        private readonly IMapper _mapper;
+        private readonly HttpClient _httpClient;
 
-    [HttpGet(Name = "GetTags")]
-    public IActionResult GetTags()
-    {
-        Random r = new Random();
-        int count = 4;
-        return this.Ok(new ListResponse<Tag>()
+        public TagsController(IMapper mapper, ILogger<TagsController> logger, HttpClient httpClient)
         {
-            Count = count,
-            Next = null,
-            Previous = null,
-            Results = Builder<Tag>.CreateListOfSize(count)
-                .All()
-                    .With(p => p.Color = RandomColorGenerator.GetRandomColor().ToHex())
-                    .With(p => p.MatchingAlgorithm = r.Next(1, 6))
-                .Build()
-        });
-    }
+            _mapper = mapper;
+            _logger = logger;
+            _httpClient = httpClient;
+        }
 
-    [HttpPost(Name = "CreateTag")]
-    public IActionResult CreateTag([FromBody] NewTag newTag)
-    {
-        var tag = _mapper.Map<Tag>(newTag);
+        [HttpGet(Name = "GetTags")]
+        public IActionResult GetTags()
+        {
+            _logger.LogInformation("Retrieving tags.");
+            // Logic to get tags would go here
+            return Ok(); // Assuming retrieval is successful
+        }
 
-        tag.Id = 1;
-        tag.Slug = "foo";
+        [HttpPost(Name = "CreateTag")]
+        public IActionResult CreateTag([FromBody] NewTag newTag)
+        {
+            var tag = _mapper.Map<Tag>(newTag);
+            _logger.LogInformation("Creating tag: {@Tag}", tag);
+            // Logic to create a new tag would go here
+            return Created($"/api/tags/{tag.Id}", tag); // Assuming creation is successful
+        }
 
-        return Created($"/api/tags/{tag.Id}", tag);
-    }
+        [HttpPut("{id:int}", Name = "UpdateTag")]
+        public IActionResult UpdateTag([FromRoute] int id, [FromBody] Tag tag)
+        {
+            _logger.LogInformation("Updating tag with ID: {Id}: {@Tag}", id, tag);
+            // Logic to update a tag would go here
+            return Ok(tag); // Assuming update is successful
+        }
 
-    [HttpPut("{id:int}", Name = "UpdateTag")]
-    public IActionResult UpdateTag([FromRoute] int id, [FromBody] Tag tag)
-    {
-        return Ok(tag);
-    }
-
-    [HttpDelete("{id:int}", Name = "DeleteTag")]
-    public IActionResult DeleteTag([FromRoute] int id)
-    {
-        return NoContent();
+        [HttpDelete("{id:int}", Name = "DeleteTag")]
+        public IActionResult DeleteTag([FromRoute] int id)
+        {
+            _logger.LogInformation("Deleting tag with ID: {Id}", id);
+            // Logic to delete a tag would go here
+            return NoContent(); // Assuming deletion is successful
+        }
     }
 }
