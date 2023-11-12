@@ -52,6 +52,8 @@ namespace NPaperless.Services
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddAutoMapper(typeof(MappingProfile));
 
             // Add framework services.
             services

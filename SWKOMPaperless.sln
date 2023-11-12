@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPaperless.DataAccess.Entit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPaperless.Services.DTOs", "NPaperless.Services.DTOs\NPaperless.Services.DTOs.csproj", "{977A7E8E-59E5-48F3-B855-AF15405E494F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPaperless.Tests", "NPaperless.Tests\NPaperless.Tests.csproj", "{4F8B0D74-6E61-4F8A-8A59-E90D50E64A70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,5 +47,9 @@ Global
 		{977A7E8E-59E5-48F3-B855-AF15405E494F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C70CF0E-33E3-4837-A5C6-C4E661825BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C70CF0E-33E3-4837-A5C6-C4E661825BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F8B0D74-6E61-4F8A-8A59-E90D50E64A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F8B0D74-6E61-4F8A-8A59-E90D50E64A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F8B0D74-6E61-4F8A-8A59-E90D50E64A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F8B0D74-6E61-4F8A-8A59-E90D50E64A70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
