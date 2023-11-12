@@ -21,85 +21,55 @@ using NPaperless.Services.Attributes;
 using NPaperless.Services.DTOs;
 
 namespace NPaperless.Services.Controllers
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [ApiController]
     public class DocumentTypesApiController : ControllerBase
-    { 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="newDocumentType"></param>
-        /// <response code="200">Success</response>
+    {
+        private readonly ILogger<DocumentTypesApiController> _logger;
+
+        public DocumentTypesApiController(ILogger<DocumentTypesApiController> logger)
+        {
+            _logger = logger;
+        }
+
+        // POST: api/document_types
         [HttpPost]
         [Route("/api/document_types")]
-        [Consumes("application/json", "text/json", "application/*+json")]
-        [ValidateModelState]
-        [SwaggerOperation("CreateDocumentType")]
-        public virtual IActionResult CreateDocumentType([FromBody]NewDocumentType newDocumentType)
+        public virtual IActionResult CreateDocumentType([FromBody]NewDocumentTypeDTO newDocumentType)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            _logger.LogInformation("Creating a new document type: {@NewDocumentTypeDTO}", newDocumentType);
+            // Your code to handle the creation
+            return StatusCode(200);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <response code="200">Success</response>
+        // DELETE: api/document_types/{id}
         [HttpDelete]
         [Route("/api/document_types/{id}")]
-        [ValidateModelState]
-        [SwaggerOperation("DeleteDocumentType")]
-        public virtual IActionResult DeleteDocumentType([FromRoute (Name = "id")][Required]int id)
+        public virtual IActionResult DeleteDocumentType([FromRoute][Required]int id)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            _logger.LogInformation("Deleting document type with ID: {Id}", id);
+            // Your code to handle the deletion
+            return StatusCode(200);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <response code="200">Success</response>
+        // GET: api/document_types
         [HttpGet]
         [Route("/api/document_types")]
-        [ValidateModelState]
-        [SwaggerOperation("GetDocumentTypes")]
         public virtual IActionResult GetDocumentTypes()
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            _logger.LogInformation("Getting all document types.");
+            // Your code to retrieve document types
+            return StatusCode(200);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="documentType"></param>
-        /// <response code="200">Success</response>
+        // PUT: api/document_types/{id}
         [HttpPut]
         [Route("/api/document_types/{id}")]
-        [Consumes("application/json", "text/json", "application/*+json")]
-        [ValidateModelState]
-        [SwaggerOperation("UpdateDocumentType")]
-        public virtual IActionResult UpdateDocumentType([FromRoute (Name = "id")][Required]int id, [FromBody]DocumentType documentType)
+        public virtual IActionResult UpdateDocumentType([FromRoute][Required]int id, [FromBody]DocumentTypeDTO documentType)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            _logger.LogInformation("Updating document type with ID: {Id}, Data: {@DocumentType}", id, documentType);
+            // Your code to handle the update
+            return StatusCode(200);
         }
     }
 }

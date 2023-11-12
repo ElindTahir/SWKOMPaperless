@@ -20,86 +20,53 @@ using Newtonsoft.Json;
 using NPaperless.Services.Attributes;
 using NPaperless.Services.DTOs;
 
+
 namespace NPaperless.Services.Controllers
-{ 
-    /// <summary>
-    /// 
-    /// </summary>
+{
     [ApiController]
     public class TagsApiController : ControllerBase
-    { 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="newTag"></param>
-        /// <response code="200">Success</response>
+    {
+        private readonly ILogger<TagsApiController> _logger;
+
+        public TagsApiController(ILogger<TagsApiController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpPost]
         [Route("/api/tags")]
-        [Consumes("application/json", "text/json", "application/*+json")]
-        [ValidateModelState]
-        [SwaggerOperation("CreateTag")]
-        public virtual IActionResult CreateTag([FromBody]NewTag newTag)
+        public IActionResult CreateTag([FromBody]NewTag newTag)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            _logger.LogInformation("Creating a new tag: {@NewTag}", newTag);
+            // Here you would include logic to handle the creation of a tag
+            return Ok(); // Assuming creation is successful
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <response code="200">Success</response>
         [HttpDelete]
         [Route("/api/tags/{id}")]
-        [ValidateModelState]
-        [SwaggerOperation("DeleteTag")]
-        public virtual IActionResult DeleteTag([FromRoute (Name = "id")][Required]int id)
+        public IActionResult DeleteTag([FromRoute]int id)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            _logger.LogInformation("Deleting tag with ID: {Id}", id);
+            // Here you would include logic to handle the deletion of a tag
+            return NoContent(); // Assuming deletion is successful
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <response code="200">Success</response>
         [HttpGet]
         [Route("/api/tags")]
-        [ValidateModelState]
-        [SwaggerOperation("GetTags")]
-        public virtual IActionResult GetTags()
+        public IActionResult GetTags()
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            _logger.LogInformation("Getting all tags.");
+            // Here you would include logic to retrieve all tags
+            return Ok(); // Assuming retrieval is successful
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="tag"></param>
-        /// <response code="200">Success</response>
         [HttpPut]
         [Route("/api/tags/{id}")]
-        [Consumes("application/json", "text/json", "application/*+json")]
-        [ValidateModelState]
-        [SwaggerOperation("UpdateTag")]
-        public virtual IActionResult UpdateTag([FromRoute (Name = "id")][Required]int id, [FromBody]Tag tag)
+        public IActionResult UpdateTag([FromRoute]int id, [FromBody]Tag tag)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            throw new NotImplementedException();
+            _logger.LogInformation("Updating tag with ID: {Id}, Data: {@Tag}", id, tag);
+            // Here you would include logic to handle the update of a tag
+            return Ok(); // Assuming update is successful
         }
     }
 }

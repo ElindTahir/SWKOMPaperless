@@ -15,11 +15,13 @@ public class CorrespondentsController : ControllerBase
     private readonly IMapper _mapper;
     private readonly HttpClient _httpClient;
 
-    public CorrespondentsController(IMapper mapper, ILogger<CorrespondentsController> logger, IHttpClientFactory httpClientFactory)
+    public CorrespondentsController(IMapper mapper, ILogger<CorrespondentsController> logger, HttpClient httpClient)
     {
         _mapper = mapper;
         _logger = logger;
-        _httpClient = httpClientFactory.CreateClient("NPaperlessAPI");
+        //_httpClient = httpClientFactory.CreateClient("NPaperlessAPI");
+        _httpClient = httpClient;
+        //_httpClient.BaseAddress = new Uri("http://npaperless.services:8081/");
     }
 
     [HttpGet(Name = "GetCorrespondents")]

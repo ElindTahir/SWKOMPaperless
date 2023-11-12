@@ -1,10 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.DataProtection.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NPaperless.Services.DTOs;
-//using NPaperless.DataAccess.Sql;
 
 namespace NPaperless.Services.Controllers
 {
@@ -12,7 +10,7 @@ namespace NPaperless.Services.Controllers
     public class CorrespondentsApiController : ControllerBase
     {
         private readonly ILogger<CorrespondentsApiController> _logger;
-        //private readonly IRepository<NewCorrespondent> _correspondentRepository;
+
         public CorrespondentsApiController(ILogger<CorrespondentsApiController> logger)
         {
             _logger = logger;
@@ -20,17 +18,11 @@ namespace NPaperless.Services.Controllers
 
         [HttpPost]
         [Route("/api/correspondents")]
-        public virtual IActionResult CreateCorrespondent([FromBody]NewCorrespondent newCorrespondent)
+        public virtual IActionResult CreateCorrespondent([FromBody]NewCorrespondentDTO newCorrespondent)
         {
-            /*_logger.LogInformation("Creating a new correspondent: {@NewCorrespondent}", newCorrespondent);
+            _logger.LogInformation("Creating a new correspondent: {@NewCorrespondentDTO}", newCorrespondent);
             // Simulate some work
             _logger.LogInformation("Correspondent created successfully.");
-            return StatusCode(200);*/
-            
-            
-            _logger.LogInformation("Creating a new correspondent: {@NewCorrespondent}", newCorrespondent);
-            // using SQL Repository
-            //_correspondentRepository.Add(newCorrespondent);
             return StatusCode(200);
             throw new NotImplementedException();
         }
