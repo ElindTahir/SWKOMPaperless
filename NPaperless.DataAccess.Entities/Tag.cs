@@ -1,9 +1,8 @@
 ﻿using System.Runtime.Serialization;
-using System;
 
 namespace NPaperless.DataAccess.Entities
 {
-    public class Correspondent
+    public class Tag
     {
         /// <summary>
         /// Gets or Sets Id
@@ -21,6 +20,11 @@ namespace NPaperless.DataAccess.Entities
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or Sets Color
+        /// </summary>
+        public string Color { get; set; }
+
+        /// <summary>
         /// Gets or Sets Match
         /// </summary>
         public string Match { get; set; }
@@ -36,14 +40,13 @@ namespace NPaperless.DataAccess.Entities
         public bool IsInsensitive { get; set; }
 
         /// <summary>
+        /// Gets or Sets IsInboxTag
+        /// </summary>
+        public bool IsInboxTag { get; set; }
+
+        /// <summary>
         /// Gets or Sets DocumentCount
         /// </summary>
         public long DocumentCount { get; set; }
-
-        /// <summary>
-        /// Gets or Sets LastCorrespondence
-        /// </summary>
-        public DateTime LastCorrespondence { get; set; }
-
     }
 }
