@@ -1,9 +1,8 @@
 ﻿using System.Runtime.Serialization;
-using System;
 
 namespace NPaperless.DataAccess.Entities
 {
-    public class Correspondent
+    public class DocumentType
     {
         /// <summary>
         /// Gets or Sets Id
@@ -39,11 +38,5 @@ namespace NPaperless.DataAccess.Entities
         /// Gets or Sets DocumentCount
         /// </summary>
         public long DocumentCount { get; set; }
-
-        /// <summary>
-        /// Gets or Sets LastCorrespondence
-        /// </summary>
-        public DateTime LastCorrespondence { get; set; }
-
     }
 }

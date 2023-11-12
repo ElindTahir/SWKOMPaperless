@@ -8,13 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.1.21" />
+      <PackageReference Include="EntityFramework" Version="6.4.4" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+      <ProjectReference Include="..\NPaperless.DataAccess.Entities\NPaperless.DataAccess.Entities.csproj" />
+      <ProjectReference Include="..\NPaperless.DataAccess.Interfaces\NPaperless.DataAccess.Interfaces.csproj" />
     </ItemGroup>
 
 </Project>

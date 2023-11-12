@@ -20,33 +20,14 @@ services:
     networks:
       - npaperless-network
 
-  npaperless.dataaccess.entities:
-    image: npaperless.dataaccess.entities
-    build:
-      context: .
-      dockerfile: NPaperless.DataAccess.Entities/Dockerfile
-    ports:
-      - "5000:5000"
-    networks:
-      - npaperless-network
-
-  npaperless.dataaccess.interfaces:
-    image: npaperless.dataaccess.interfaces
-    build:
-      context: .
-      dockerfile: NPaperless.DataAccess.Interfaces/Dockerfile
-    ports:
-      - "3000:3000"
-    networks:
-      - npaperless-network
-
   npaperless.dataaccess.sql:
-    image: npaperless.dataaccess.sql
-    build:
-      context: .
-      dockerfile: NPaperless.DataAccess.Sql/Dockerfile
+    image: postgres
+    environment:
+      POSTGRES_DB: npaperless
+      POSTGRES_USER: npaperless
+      POSTGRES_PASSWORD: npaperless
     ports:
-      - "1500:1500"
+      - "5432:5432"
     networks:
       - npaperless-network
 
