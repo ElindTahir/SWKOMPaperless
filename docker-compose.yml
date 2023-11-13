@@ -32,6 +32,13 @@ services:
       - "5432:5432"
     networks:
       - npaperless-network
+        
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - npaperless-network
 
 networks:
   npaperless-network:
