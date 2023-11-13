@@ -1,50 +1,41 @@
-﻿using System.Data.SqlClient;
-using Dapper;
+﻿using Dapper;
 
 namespace NPaperless.DataAccess.Sql;
 using NPaperless.DataAccess.Entities;
 
 public class DocumentTypeRepository: IRepository<DocumentType>
 {
-    private readonly string _connectionString;
+    private readonly NPaperlessDbContext _dbContext;
+
     
-    public DocumentTypeRepository(string connectionString)
+    public DocumentTypeRepository(NPaperlessDbContext dbContext)
     {
-        _connectionString = connectionString;
+        _dbContext = dbContext;
     }
     
     public void Add(DocumentType item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute(
-            "INSERT INTO DocumentTypes (Name, Description) VALUES (@Name, @Description)",
-            item);
+        _dbContext.DocumentTypes.Add(item);
     }
     
     public DocumentType FindById(int id)
     {
-        using var connection = new SqlConnection(_connectionString);
-        return connection.QuerySingleOrDefault<DocumentType>("SELECT * FROM DocumentTypes WHERE Id = @Id", new { Id = id }) ?? throw new Exception("DocumentType not found");
+        return _dbContext.DocumentTypes.Find(id) ?? throw new KeyNotFoundException();
     }
     
     public IEnumerable<DocumentType> GetAll()
     {
-        using var connection = new SqlConnection(_connectionString);
-        return connection.Query<DocumentType>("SELECT * FROM DocumentTypes");
+        return _dbContext.DocumentTypes.ToList();
     }
     
     public void Update(DocumentType item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute(
-            "UPDATE DocumentTypes SET Name = @Name, Description = @Description WHERE Id = @Id",
-            item);
+        _dbContext.DocumentTypes.Update(item);
     }
     
     public void Delete(DocumentType item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute("DELETE FROM DocumentTypes WHERE Id = @Id", item);
+        _dbContext.DocumentTypes.Remove(item);
     }
     
 }

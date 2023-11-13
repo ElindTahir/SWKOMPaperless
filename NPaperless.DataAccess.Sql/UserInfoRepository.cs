@@ -1,50 +1,40 @@
-﻿using System.Data.SqlClient;
-using Dapper;
+﻿using Dapper;
 
 namespace NPaperless.DataAccess.Sql;
 using NPaperless.DataAccess.Entities;
 
 public class UserInfoRepository : IRepository<UserInfo>
 {
-    private readonly string _connectionString;
+    private readonly NPaperlessDbContext _dbContext;
     
-    public UserInfoRepository(string connectionString)
+    public UserInfoRepository(NPaperlessDbContext dbContext)
     {
-        _connectionString = connectionString;
+        _dbContext = dbContext;
     }
     
     public void Add(UserInfo item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute(
-            "INSERT INTO UserInfo (FirstName, LastName, Email, Password, Salt) VALUES (@FirstName, @LastName, @Email, @Password, @Salt)",
-            item);
+        _dbContext.UserInfos.Add(item);
     }
     
     public UserInfo FindById(int id)
     {
-        using var connection = new SqlConnection(_connectionString);
-        return connection.QuerySingleOrDefault<UserInfo>("SELECT * FROM UserInfo WHERE Id = @Id", new { Id = id }) ?? throw new Exception("UserInfo not found");
+        return _dbContext.UserInfos.Find(id) ?? throw new KeyNotFoundException();
     }
     
     public IEnumerable<UserInfo> GetAll()
     {
-        using var connection = new SqlConnection(_connectionString);
-        return connection.Query<UserInfo>("SELECT * FROM UserInfo");
+        return _dbContext.UserInfos.ToList();
     }
     
     public void Update(UserInfo item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute(
-            "UPDATE UserInfo SET FirstName = @FirstName, LastName = @LastName, Email = @Email, Password = @Password, Salt = @Salt WHERE Id = @Id",
-            item);
+        _dbContext.UserInfos.Update(item);
     }
     
     public void Delete(UserInfo item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute("DELETE FROM UserInfo WHERE Id = @Id", item);
+        _dbContext.UserInfos.Remove(item);
     }
     
 }

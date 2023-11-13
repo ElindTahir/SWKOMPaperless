@@ -13,7 +13,7 @@ namespace NPaperless.DataAccess.Entities
         /// <summary>
         /// Gets or Sets Slug
         /// </summary>
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         /// <summary>
         /// Gets or Sets Name

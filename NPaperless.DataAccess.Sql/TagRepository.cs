@@ -1,50 +1,40 @@
-﻿using System.Data.SqlClient;
-using Dapper;
+﻿using Dapper;
 
 namespace NPaperless.DataAccess.Sql;
 using NPaperless.DataAccess.Entities;
 
 public class TagRepository : IRepository<Tag>
 {
-    private readonly string _connectionString;
+    private readonly NPaperlessDbContext _dbContext;
     
-    public TagRepository(string connectionString)
+    public TagRepository(NPaperlessDbContext dbContext)
     {
-        _connectionString = connectionString;
+        _dbContext = dbContext;
     }
     
     public void Add(Tag item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute(
-            "INSERT INTO Tags (Name) VALUES (@Name)",
-            item);
+        _dbContext.Tags.Add(item);
     }
     
     public Tag FindById(int id)
     {
-        using var connection = new SqlConnection(_connectionString);
-        return connection.QuerySingleOrDefault<Tag>("SELECT * FROM Tags WHERE Id = @Id", new { Id = id }) ?? throw new Exception("Tag not found");
+        return _dbContext.Tags.Find(id) ?? throw new KeyNotFoundException();
     }
     
     public IEnumerable<Tag> GetAll()
     {
-        using var connection = new SqlConnection(_connectionString);
-        return connection.Query<Tag>("SELECT * FROM Tags");
+        return _dbContext.Tags.ToList();
     }
     
     public void Update(Tag item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute(
-            "UPDATE Tags SET Name = @Name WHERE Id = @Id",
-            item);
+        _dbContext.Tags.Update(item);
     }
     
     public void Delete(Tag item)
     {
-        using var connection = new SqlConnection(_connectionString);
-        connection.Execute("DELETE FROM Tags WHERE Id = @Id", item);
+        _dbContext.Tags.Remove(item);
     }
     
 }

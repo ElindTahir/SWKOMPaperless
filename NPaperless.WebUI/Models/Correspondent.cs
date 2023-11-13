@@ -50,7 +50,7 @@ public partial class Correspondent
     }
 
     [JsonPropertyName("slug")]
-    public string Slug
+    public string? Slug
     {
         get; set;
     }

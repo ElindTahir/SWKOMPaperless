@@ -14,16 +14,23 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using NPaperless.DataAccess.Entities;
+using NPaperless.DataAccess.Sql;
 using NPaperless.Services.Authentication;
 using NPaperless.Services.Filters;
 using NPaperless.Services.OpenApi;
 using NPaperless.Services.Formatters;
+//logging
+using Microsoft.Extensions.Logging;
+using NPaperless.Services.Controllers;
+
 
 namespace NPaperless.Services
 {
@@ -39,7 +46,11 @@ namespace NPaperless.Services
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _logger = new LoggerFactory().CreateLogger<DocumentsApi>();
         }
+        
+        private readonly ILogger<DocumentsApi> _logger;
+
 
         /// <summary>
         /// The application configuration.
@@ -101,6 +112,22 @@ namespace NPaperless.Services
                 });
                 services
                     .AddSwaggerGenNewtonsoftSupport();
+                services
+                    .AddDbContext<NPaperlessDbContext>(options =>
+                    {
+                        options.UseNpgsql(Configuration.GetConnectionString("NPaperlessDatabase"));
+                        _logger.LogInformation("Using connection string: {0}", Configuration.GetConnectionString("NPaperlessDatabase"));
+                    });
+                services
+                    .AddScoped<IRepository<Correspondent>, CorrespondentRepository>();
+                services
+                    .AddScoped<IRepository<Document>, DocumentRepository>();
+                services
+                    .AddScoped<IRepository<DocumentType>, DocumentTypeRepository>();
+                services
+                    .AddScoped<IRepository<Tag>, TagRepository>();
+                services
+                    .AddScoped<IRepository<UserInfo>, UserInfoRepository>();
         }
 
         /// <summary>
@@ -141,6 +168,13 @@ namespace NPaperless.Services
                 {
                     endpoints.MapControllers();
                 });
+            
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<NPaperlessDbContext>();
+                dbContext.Database.Migrate();
+                _logger.LogInformation("Migrated database");
+            }
         }
     }
 }

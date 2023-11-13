@@ -12,6 +12,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<NewCorrespondentDTO, Correspondent>();
         CreateMap<Correspondent, CorrespondentDTO>().ReverseMap();
         CreateMap<Document, DocumentDTO>().ReverseMap();
         CreateMap<DocumentType, DocumentTypeDTO>().ReverseMap();
@@ -19,7 +20,6 @@ public class MappingProfile : Profile
         CreateMap<UserInfo, UserInfoDTO>().ReverseMap();
         
         //TODO: Mapping for NewDTOs still missing
-
     }
     
 }
