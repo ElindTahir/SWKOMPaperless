@@ -12,7 +12,9 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<NewCorrespondentDTO, Correspondent>();
+        CreateMap<NewCorrespondentDTO, Correspondent>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Slug, opt => opt.Ignore());
         CreateMap<Correspondent, CorrespondentDTO>().ReverseMap();
         CreateMap<Document, DocumentDTO>().ReverseMap();
         CreateMap<DocumentType, DocumentTypeDTO>().ReverseMap();
