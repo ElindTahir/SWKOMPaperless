@@ -32,8 +32,12 @@ internal class Program
             // Configure the client with the base address for the REST API service
             //client.BaseAddress = new Uri("http://npaperless.services:8081/");
         //});
-        
-        builder.Services.AddHttpClient();
+
+        builder.Services.AddHttpClient("ServiceClient", client =>
+        {
+            client.BaseAddress = new Uri("http://npaperless.services:8081/"); // Set the base address here
+        });
+
 
         builder.Services.AddAutoMapper(cfg =>
         {
