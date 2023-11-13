@@ -39,6 +39,34 @@ services:
       - "8080:8080"
     networks:
       - npaperless-network
+  
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    environment:
+      RABBITMQ_DEFAULT_USER: "npaperless"
+      RABBITMQ_DEFAULT_PASS: "npaperless"
+    ports:
+      - "5672:5672" # RabbitMQ Server
+      - "15672:15672" # RabbitMQ Management Console
+    networks:
+      - npaperless-network
+
+  minio:
+    image: minio/minio
+    environment:
+      MINIO_ACCESS_KEY: "npaperless"
+      MINIO_SECRET_KEY: "npaperless123"
+    ports:
+      - "9000:9000" # Minio API
+      - "9090:9000" # Minio Console
+    volumes:
+      - minio_data:/data
+    command: server /data
+    networks:
+      - npaperless-network
+
+volumes:
+  minio_data:
 
 networks:
   npaperless-network:
