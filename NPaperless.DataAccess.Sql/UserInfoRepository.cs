@@ -12,9 +12,11 @@ public class UserInfoRepository : IRepository<UserInfo>
         _dbContext = dbContext;
     }
     
-    public void Add(UserInfo item)
+    public UserInfo Add(UserInfo item)
     {
         _dbContext.UserInfos.Add(item);
+        _dbContext.SaveChanges();
+        return item;
     }
     
     public UserInfo FindById(int id)
@@ -27,14 +29,17 @@ public class UserInfoRepository : IRepository<UserInfo>
         return _dbContext.UserInfos.ToList();
     }
     
-    public void Update(UserInfo item)
+    public UserInfo Update(UserInfo item)
     {
         _dbContext.UserInfos.Update(item);
+        _dbContext.SaveChanges();
+        return item;
     }
     
     public void Delete(UserInfo item)
     {
         _dbContext.UserInfos.Remove(item);
+        _dbContext.SaveChanges();
     }
     
 }

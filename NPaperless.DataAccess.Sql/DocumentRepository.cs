@@ -12,9 +12,11 @@ public class DocumentRepository : IRepository<Document>
         _dbContext = dbContext;
     }
     
-    public void Add(Document item)
+    public Document Add(Document item)
     {
         _dbContext.Documents.Add(item);
+        _dbContext.SaveChanges();
+        return item;
     }
     
     public Document FindById(int id)
@@ -27,14 +29,17 @@ public class DocumentRepository : IRepository<Document>
         return _dbContext.Documents.ToList();
     }
     
-    public void Update(Document item)
+    public Document Update(Document item)
     {
         _dbContext.Documents.Update(item);
+        _dbContext.SaveChanges();
+        return item;
     }
     
     public void Delete(Document item)
     {
         _dbContext.Documents.Remove(item);
+        _dbContext.SaveChanges();
     }
     
 }

@@ -11,10 +11,12 @@ public class CorrespondentRepository : IRepository<Correspondent>
         _dbContext = dbContext;
     }
 
-    public void Add(Correspondent item)
+    public Correspondent Add(Correspondent item)
     {
+        // add the new correspondent to the database and return the new correspondent with the id
         _dbContext.Correspondents.Add(item);
         _dbContext.SaveChanges();
+        return item;
     }
 
     public Correspondent FindById(int id)
@@ -27,13 +29,16 @@ public class CorrespondentRepository : IRepository<Correspondent>
         return _dbContext.Correspondents.ToList();
     }
 
-    public void Update(Correspondent item)
+    public Correspondent Update(Correspondent item)
     {
         _dbContext.Correspondents.Update(item);
+        _dbContext.SaveChanges();
+        return item;
     }
 
     public void Delete(Correspondent item)
     {
         _dbContext.Correspondents.Remove(item);
+        _dbContext.SaveChanges();
     }
 }

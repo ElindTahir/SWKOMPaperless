@@ -12,9 +12,11 @@ public class TagRepository : IRepository<Tag>
         _dbContext = dbContext;
     }
     
-    public void Add(Tag item)
+    public Tag Add(Tag item)
     {
         _dbContext.Tags.Add(item);
+        _dbContext.SaveChanges();
+        return item;
     }
     
     public Tag FindById(int id)
@@ -27,14 +29,17 @@ public class TagRepository : IRepository<Tag>
         return _dbContext.Tags.ToList();
     }
     
-    public void Update(Tag item)
+    public Tag Update(Tag item)
     {
         _dbContext.Tags.Update(item);
+        _dbContext.SaveChanges();
+        return item;
     }
     
     public void Delete(Tag item)
     {
         _dbContext.Tags.Remove(item);
+        _dbContext.SaveChanges();
     }
     
 }

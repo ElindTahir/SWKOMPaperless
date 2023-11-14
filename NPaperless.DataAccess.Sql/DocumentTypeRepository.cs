@@ -13,9 +13,11 @@ public class DocumentTypeRepository: IRepository<DocumentType>
         _dbContext = dbContext;
     }
     
-    public void Add(DocumentType item)
+    public DocumentType Add(DocumentType item)
     {
         _dbContext.DocumentTypes.Add(item);
+        _dbContext.SaveChanges();
+        return item;
     }
     
     public DocumentType FindById(int id)
@@ -28,14 +30,17 @@ public class DocumentTypeRepository: IRepository<DocumentType>
         return _dbContext.DocumentTypes.ToList();
     }
     
-    public void Update(DocumentType item)
+    public DocumentType Update(DocumentType item)
     {
         _dbContext.DocumentTypes.Update(item);
+        _dbContext.SaveChanges();
+        return item;
     }
     
     public void Delete(DocumentType item)
     {
         _dbContext.DocumentTypes.Remove(item);
+        _dbContext.SaveChanges();
     }
     
 }
