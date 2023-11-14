@@ -54,14 +54,14 @@ services:
   minio:
     image: minio/minio
     environment:
-      MINIO_ACCESS_KEY: "npaperless"
-      MINIO_SECRET_KEY: "npaperless123"
+      MINIO_ROOT_USER: "npaperless"
+      MINIO_ROOT_PASSWORD: "npaperless123"
     ports:
       - "9000:9000" # Minio API
-      - "9090:9000" # Minio Console
+      - "9090:9090" # Minio Console
     volumes:
       - minio_data:/data
-    command: server /data
+    command: server /data --console-address ":9090"
     networks:
       - npaperless-network
 
