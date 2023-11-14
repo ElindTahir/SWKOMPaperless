@@ -1,14 +1,16 @@
+using System.Collections.Immutable;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using NPaperless.WebUI.Models;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using FizzWare.NBuilder;
 
 namespace NPaperless.WebUI.Controllers;
 
 [ApiController]
-[Route("/api/correspondents/")]
+[Route("/api")]
 public class CorrespondentsController : ControllerBase
 {
     private readonly ILogger<CorrespondentsController> _logger;
@@ -23,8 +25,8 @@ public class CorrespondentsController : ControllerBase
         _httpClient = httpClientFactory.CreateClient("ServiceClient");
         //_httpClient.BaseAddress = new Uri("http://npaperless.services:8081/");
     }
-
-    [HttpGet(Name = "GetCorrespondents")]
+    
+    [HttpGet("correspondents")]
     public async Task<IActionResult> GetCorrespondents()
     {
         var response = await _httpClient.GetAsync("api/correspondents");
@@ -32,7 +34,17 @@ public class CorrespondentsController : ControllerBase
         {
             var content = await response.Content.ReadAsStringAsync();
             var correspondents = JsonSerializer.Deserialize<List<Correspondent>>(content);
-            return Ok(correspondents);
+            if (correspondents == null || correspondents.Count == 0)
+            {
+                return Ok(Builder<Correspondent>.CreateListOfSize(0).Build());
+            }
+
+            return Ok(Builder<ListResponse<Correspondent>>.CreateNew()
+                .With(x => x.Count = correspondents.Count)
+                .With(x => x.Next = null)
+                .With(x => x.Previous = null)
+                .With(x => x.Results = correspondents)
+                .Build());
         }
         else
         {
