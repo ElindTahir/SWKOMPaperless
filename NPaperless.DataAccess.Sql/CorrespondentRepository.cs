@@ -19,7 +19,7 @@ public class CorrespondentRepository : IRepository<Correspondent>
         return item;
     }
 
-    public Correspondent FindById(int id)
+    public Correspondent FindById(long id)
     {
         return _dbContext.Correspondents.Find(id) ?? throw new KeyNotFoundException();
     }

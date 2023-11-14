@@ -10,7 +10,7 @@ using FizzWare.NBuilder;
 namespace NPaperless.WebUI.Controllers;
 
 [ApiController]
-[Route("/api")]
+[Route("/api/correspondents")]
 public class CorrespondentsController : ControllerBase
 {
     private readonly ILogger<CorrespondentsController> _logger;
@@ -26,7 +26,7 @@ public class CorrespondentsController : ControllerBase
         //_httpClient.BaseAddress = new Uri("http://npaperless.services:8081/");
     }
     
-    [HttpGet("correspondents")]
+    [HttpGet(Name = "GetCorrespondents")]
     public async Task<IActionResult> GetCorrespondents()
     {
         var response = await _httpClient.GetAsync("api/correspondents");
@@ -36,7 +36,12 @@ public class CorrespondentsController : ControllerBase
             var correspondents = JsonSerializer.Deserialize<List<Correspondent>>(content);
             if (correspondents == null || correspondents.Count == 0)
             {
-                return Ok(Builder<Correspondent>.CreateListOfSize(0).Build());
+                return Ok(Builder<ListResponse<Correspondent>>.CreateNew()
+                    .With(x => x.Count = 0)
+                    .With(x => x.Next = null)
+                    .With(x => x.Previous = null)
+                    .With(x => x.Results = ImmutableList<Correspondent>.Empty)
+                    .Build());
             }
 
             return Ok(Builder<ListResponse<Correspondent>>.CreateNew()
@@ -62,6 +67,7 @@ public class CorrespondentsController : ControllerBase
         {
             var readContent = await response.Content.ReadAsStringAsync();
             var createdCorrespondent = JsonSerializer.Deserialize<Correspondent>(readContent);
+            _logger.LogInformation($"Created Correspondent: {createdCorrespondent.Id}");
             return Created($"/api/correspondents/{createdCorrespondent.Id}", createdCorrespondent);
         }
         else
@@ -78,7 +84,10 @@ public class CorrespondentsController : ControllerBase
         var response = await _httpClient.PutAsync($"api/correspondents/{id}", content);
         if (response.IsSuccessStatusCode)
         {
-            return Ok(correspondent);
+            var readContent = await response.Content.ReadAsStringAsync();
+            var updatedCorrespondent = JsonSerializer.Deserialize<Correspondent>(readContent);
+            _logger.LogInformation($"Updated Correspondent: {updatedCorrespondent.Id}");
+            return Accepted($"/api/correspondents/{updatedCorrespondent.Id}", updatedCorrespondent);
         }
         else
         {

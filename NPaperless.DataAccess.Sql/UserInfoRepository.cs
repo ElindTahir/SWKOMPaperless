@@ -19,7 +19,7 @@ public class UserInfoRepository : IRepository<UserInfo>
         return item;
     }
     
-    public UserInfo FindById(int id)
+    public UserInfo FindById(long id)
     {
         return _dbContext.UserInfos.Find(id) ?? throw new KeyNotFoundException();
     }

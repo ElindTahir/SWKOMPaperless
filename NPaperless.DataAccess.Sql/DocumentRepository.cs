@@ -19,7 +19,7 @@ public class DocumentRepository : IRepository<Document>
         return item;
     }
     
-    public Document FindById(int id)
+    public Document FindById(long id)
     {
         return _dbContext.Documents.Find(id) ?? throw new KeyNotFoundException();
     }

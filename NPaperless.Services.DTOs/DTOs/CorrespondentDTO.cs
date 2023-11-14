@@ -36,7 +36,7 @@ namespace NPaperless.Services.DTOs
         /// Gets or Sets Slug
         /// </summary>
         [DataMember(Name="slug", EmitDefaultValue=true)]
-        public string Slug { get; set; }
+        public string? Slug { get; set; }
 
         /// <summary>
         /// Gets or Sets Name

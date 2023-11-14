@@ -19,7 +19,7 @@ public class TagRepository : IRepository<Tag>
         return item;
     }
     
-    public Tag FindById(int id)
+    public Tag FindById(long id)
     {
         return _dbContext.Tags.Find(id) ?? throw new KeyNotFoundException();
     }
