@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using NPaperless.WebUI.Models;
 using AutoMapper;
 using FizzWare.NBuilder;
+using Minio;
+using NPaperless.Services.MinIO;
 
 internal class Program
 {
@@ -37,7 +39,8 @@ internal class Program
         {
             client.BaseAddress = new Uri("http://npaperless.services:8081/"); // Set the base address here
         });
-
+        
+        builder.Services.AddScoped<FileUpload>();
 
         builder.Services.AddAutoMapper(cfg =>
         {

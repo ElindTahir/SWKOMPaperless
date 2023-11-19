@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-
 namespace NPaperless.DataAccess.Sql;
 
 public class NPaperlessDbContextFactory : IDesignTimeDbContextFactory<NPaperlessDbContext>

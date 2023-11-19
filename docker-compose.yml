@@ -11,6 +11,7 @@ services:
       - npaperless-network
     depends_on:
       - npaperless.dataaccess.sql
+      - minio
 
   npaperless.webui:
     image: npaperless.webui
@@ -55,7 +56,7 @@ services:
     image: minio/minio
     environment:
       MINIO_ROOT_USER: "npaperless"
-      MINIO_ROOT_PASSWORD: "npaperless123"
+      MINIO_ROOT_PASSWORD: "npaperless"
     ports:
       - "9000:9000" # Minio API
       - "9090:9090" # Minio Console

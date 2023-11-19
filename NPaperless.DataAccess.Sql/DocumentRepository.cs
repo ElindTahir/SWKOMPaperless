@@ -14,6 +14,10 @@ public class DocumentRepository : IRepository<Document>
     
     public Document Add(Document item)
     {
+        item.Created = DateTime.UtcNow;
+        item.CreatedDate = DateTime.UtcNow;
+        item.Modified = DateTime.UtcNow;
+        item.Added = DateTime.UtcNow;
         _dbContext.Documents.Add(item);
         _dbContext.SaveChanges();
         return item;

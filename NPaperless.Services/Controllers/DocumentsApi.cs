@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
+using NPaperless.DataAccess.Sql;
 using NPaperless.Services.DTOs;
 
 
@@ -13,19 +17,36 @@ namespace NPaperless.Services.Controllers
     public class DocumentsApi : ControllerBase
     {
         private readonly ILogger<DocumentsApi> _logger;
+        private DocumentRepository _documentRepository;
+        private NPaperlessDbContext _dbContext;
+        private IMapper _mapper;
 
-        public DocumentsApi(ILogger<DocumentsApi> logger)
+        public DocumentsApi(ILogger<DocumentsApi> logger, IMapper mapper)
         {
             _logger = logger;
+            _mapper = mapper;
+            var connectionString =
+                "Host=npaperless.dataaccess.sql;Database=npaperless;Username=npaperless;Password=npaperless;";
+            var optionsBuilder = new DbContextOptionsBuilder<NPaperlessDbContext>();
+            optionsBuilder.UseNpgsql(connectionString);
+            _dbContext = new NPaperlessDbContext(optionsBuilder.Options);
+            _documentRepository = new DocumentRepository(_dbContext);
         }
 
         [HttpPost]
         [Route("/api/documents")]
         public IActionResult UploadDocument([FromBody]DocumentDTO newDocument)
         {
-            _logger.LogInformation("Received request to upload document: {@NewDocument}", newDocument);
-            // Your logic here
-            throw new NotImplementedException();
+            var createdDocument = _documentRepository.Add(_mapper.Map<DataAccess.Entities.Document>(newDocument));
+            
+            if (createdDocument.Id > 0)
+            {
+                return Created($"/api/documents/{createdDocument.Id}", createdDocument);
+            }
+            else
+            {
+                return StatusCode(500);
+            }
         }
         
         [HttpGet]

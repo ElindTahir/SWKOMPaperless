@@ -30,7 +30,9 @@ using NPaperless.Services.Formatters;
 //logging
 using Microsoft.Extensions.Logging;
 using NPaperless.Services.Controllers;
-
+using Minio;
+using Minio.DataModel.Args;
+using NPaperless.Services.MinIO;
 
 namespace NPaperless.Services
 {
@@ -56,6 +58,8 @@ namespace NPaperless.Services
         /// The application configuration.
         /// </summary>
         public IConfiguration Configuration { get; }
+        
+       
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
@@ -63,8 +67,9 @@ namespace NPaperless.Services
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            
             services.AddAutoMapper(typeof(MappingProfile));
+
+            //services.AddScoped<FileUpload>();
 
             // Add framework services.
             services
@@ -128,6 +133,8 @@ namespace NPaperless.Services
                     .AddScoped<IRepository<Tag>, TagRepository>();
                 services
                     .AddScoped<IRepository<UserInfo>, UserInfoRepository>();
+                
+                
         }
 
         /// <summary>

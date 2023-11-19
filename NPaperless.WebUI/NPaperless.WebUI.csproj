@@ -29,6 +29,11 @@
       <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\NPaperless.Services.DTOs\NPaperless.Services.DTOs.csproj" />
+      <ProjectReference Include="..\NPaperless.Services.MinIO\NPaperless.Services.MinIO.csproj" />
+    </ItemGroup>
+
     
 
 </Project>

@@ -28,6 +28,7 @@
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+      <PackageReference Include="Minio" Version="6.0.1" />
       <PackageReference Include="Moq" Version="4.20.69" />
       <PackageReference Include="NBuilder" Version="6.1.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -44,6 +45,7 @@
       <ProjectReference Include="..\NPaperless.DataAccess.Entities\NPaperless.DataAccess.Entities.csproj" />
       <ProjectReference Include="..\NPaperless.DataAccess.Sql\NPaperless.DataAccess.Sql.csproj" />
       <ProjectReference Include="..\NPaperless.Services.DTOs\NPaperless.Services.DTOs.csproj" />
+      <ProjectReference Include="..\NPaperless.Services.MinIO\NPaperless.Services.MinIO.csproj" />
     </ItemGroup>
 
 </Project>

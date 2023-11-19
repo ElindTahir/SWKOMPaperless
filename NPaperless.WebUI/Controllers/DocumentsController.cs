@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using NPaperless.Services.DTOs;
+using NPaperless.Services.MinIO;
 using Document = NPaperless.WebUI.Models.Document;
 
 namespace NPaperless.WebUI.Controllers
@@ -13,14 +16,17 @@ namespace NPaperless.WebUI.Controllers
     {
         private readonly ILogger<DocumentsController> _logger;
         private readonly HttpClient _httpClient;
+        private FileUpload _fileUpload;
 
-        public DocumentsController(ILogger<DocumentsController> logger, HttpClient httpClient)
+        public DocumentsController(ILogger<DocumentsController> logger, HttpClient httpClient, FileUpload fileUpload, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             //_httpClient = httpClientFactory.CreateClient("NPaperlessAPI"); // Ensure this client is configured in Startup.cs
             _httpClient = httpClient;
             //Diese Zeile ist eine missgeburt
             //_httpClient.BaseAddress = new Uri("http://npaperless.services:8081/");
+            _fileUpload = fileUpload;
+            _httpClient = httpClientFactory.CreateClient("ServiceClient");
         }
 
         [HttpGet]
@@ -41,26 +47,64 @@ namespace NPaperless.WebUI.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateDocument([FromBody] Document newDocument)
+        [HttpPost("post_document", Name = "UploadDocument")]
+        public async Task<IActionResult> UploadDocument([FromForm] string? title,
+            [FromForm] DateTime? created,
+            [FromForm(Name = "document_type")] uint? documentType,
+            [FromForm] uint[] tags,
+            [FromForm] uint? correspondent,
+            [FromForm] IEnumerable<IFormFile> document)
         {
-            _logger.LogInformation("Creating a new document: {Title}", newDocument.Title);
-            var jsonContent = JsonSerializer.Serialize(newDocument);
-            var httpContent = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("api/documents", httpContent);
-
+            
+            // Get Document content
+            var file = document.FirstOrDefault();
+            if (file == null)
+            {
+                return BadRequest("No file was uploaded");
+            }
+            // Get file content 
+            var fileContent = new byte[file.Length];
+            await file.OpenReadStream().ReadAsync(fileContent);
+            // get content as string
+            var fileContentAsString = System.Text.Encoding.UTF8.GetString(fileContent);
+            
+            // Upload file to MinIO
+            await _fileUpload.UploadFileAsync(file.OpenReadStream(), file.FileName);
+            
+            // Create Document object
+            var doc = new NPaperless.WebUI.Models.Document()
+            {
+                Correspondent = null,
+                DocumentType = 0,
+                StoragePath = 0,
+                Title = title ?? "Default Title",
+                Content = "Default Content",
+                //empty tags array
+                Tags = new uint[0],
+                CreatedDate = DateTime.UtcNow,
+                Created = DateTime.UtcNow,
+                Modified = DateTime.UtcNow,
+                Added = DateTime.UtcNow,
+                ArchiveSerialNumber = "test",
+                OriginalFileName = file.Name ?? "Default Filename",
+                ArchivedFileName = "title"
+            };
+            
+            var response = await _httpClient.PostAsJsonAsync("api/documents", doc);
             if (response.IsSuccessStatusCode)
             {
-                var readContent = await response.Content.ReadAsStringAsync();
-                var createdDocument = JsonSerializer.Deserialize<Document>(readContent);
-                return CreatedAtAction(nameof(GetDocument), new { id = createdDocument.Id }, createdDocument);
+                var content = await response.Content.ReadAsStringAsync();
+                var createdDocument = JsonSerializer.Deserialize<Document>(content);
+                _logger.LogInformation($"Created Document: {createdDocument.Id}");
+                return Created($"/api/documents/{createdDocument.Id}", createdDocument);
             }
             else
             {
-                _logger.LogError($"Error creating document: {response.ReasonPhrase}");
+                _logger.LogError($"Error calling REST API: {response.ReasonPhrase}");
                 return StatusCode((int)response.StatusCode, response.ReasonPhrase);
             }
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDocument(int id)
