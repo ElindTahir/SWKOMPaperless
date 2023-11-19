@@ -65,8 +65,6 @@ namespace NPaperless.WebUI.Controllers
             // Get file content 
             var fileContent = new byte[file.Length];
             await file.OpenReadStream().ReadAsync(fileContent);
-            // get content as string
-            var fileContentAsString = System.Text.Encoding.UTF8.GetString(fileContent);
             
             // Upload file to MinIO
             await _fileUpload.UploadFileAsync(file.OpenReadStream(), file.FileName);
@@ -77,7 +75,7 @@ namespace NPaperless.WebUI.Controllers
                 Correspondent = null,
                 DocumentType = 0,
                 StoragePath = 0,
-                Title = title ?? "Default Title",
+                Title = file.FileName,
                 Content = "Default Content",
                 //empty tags array
                 Tags = new uint[0],
@@ -86,7 +84,7 @@ namespace NPaperless.WebUI.Controllers
                 Modified = DateTime.UtcNow,
                 Added = DateTime.UtcNow,
                 ArchiveSerialNumber = "test",
-                OriginalFileName = file.Name ?? "Default Filename",
+                OriginalFileName = file.FileName,
                 ArchivedFileName = "title"
             };
             

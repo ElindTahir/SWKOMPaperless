@@ -6,16 +6,11 @@ namespace NPaperless.Services.MinIO;
 
 public class FileUpload
 {
-    private readonly IMinioClient _minioClient;
-    
-    public FileUpload()
-    {
-        _minioClient = new MinioClient()
-            .WithEndpoint("minio:9000")
-            .WithCredentials("npaperless", "npaperless")
-            .Build();
-    }
-    
+    private readonly IMinioClient _minioClient = new MinioClient()
+        .WithEndpoint("minio:9000")
+        .WithCredentials("npaperless", "npaperless")
+        .Build();
+
     public async Task UploadFileAsync(Stream fileStream, string fileName)
     {
         var bucketName = "npaperless";
