@@ -12,7 +12,22 @@ services:
     depends_on:
       - npaperless.dataaccess.sql
       - minio
-
+        
+  npaperless.services.ocr:
+    image: npaperless.services.ocr
+    build:
+      context: .
+      dockerfile: NPaperless.Services.OCR/Dockerfile
+    ports:
+      - "8082:8082"
+    networks: 
+      - npaperless-network
+    depends_on: 
+      - rabbitmq
+      - npaperless.dataaccess.sql
+      - minio
+    restart: always
+  
   npaperless.webui:
     image: npaperless.webui
     build:
@@ -62,6 +77,8 @@ services:
     command: server /data --console-address ":9090"
     networks:
       - npaperless-network
+        
+    
 
 volumes:
   minio_data:

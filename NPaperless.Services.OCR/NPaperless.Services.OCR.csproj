@@ -11,6 +11,22 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+      <Content Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NPaperless.OCRLibrary\NPaperless.OCRLibrary.csproj" />
+      <ProjectReference Include="..\NPaperless.SearchLibrary\NPaperless.SearchLibrary.csproj" />
+      <ProjectReference Include="..\NPaperless.Services.MinIO\NPaperless.Services.MinIO.csproj" />
+      <ProjectReference Include="..\NPaperless.Services.RabbitMQ\NPaperless.Services.RabbitMQ.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="12.0.1" />
+      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     </ItemGroup>
 
 </Project>

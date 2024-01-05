@@ -37,4 +37,34 @@ public class FileUpload
             Console.WriteLine("File Upload Error: {0}", e.Message);
         }
     }
+
+    public async Task<Stream> DownloadFileAsync(string fileName)
+    {
+        var bucketName = "npaperless";
+    
+        // Bestätigen, dass das Objekt existiert, bevor ein Versuch unternommen wird, es abzurufen
+        StatObjectArgs statObjectArgs = new StatObjectArgs()
+            .WithBucket(bucketName)
+            .WithObject(fileName);
+        await _minioClient.StatObjectAsync(statObjectArgs);
+
+        MemoryStream memoryStream = new MemoryStream();
+        
+        // InputStream erhalten
+        GetObjectArgs getObjectArgs = new GetObjectArgs()
+            .WithBucket(bucketName)
+            .WithObject(fileName)
+            .WithCallbackStream((stream) =>
+            {
+                stream.CopyTo(memoryStream);
+            });
+        await _minioClient.GetObjectAsync(getObjectArgs);
+
+        // Stellen Sie sicher, dass der MemoryStream zurückgespult wird, bevor er zurückgegeben wird
+        memoryStream.Position = 0;
+
+        return memoryStream;
+    }
+    
+    
 }
