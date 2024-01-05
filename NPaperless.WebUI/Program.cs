@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NPaperless.WebUI.Models;
 using AutoMapper;
 using FizzWare.NBuilder;
+using Microsoft.Extensions.Options;
 using Minio;
+using NPaperless.QueueLibrary;
 using NPaperless.Services.MinIO;
 
 internal class Program
@@ -66,6 +68,18 @@ internal class Program
                 logging.MediaTypeOptions.AddText("application/json");
             });
         }
+        
+        // Registrieren Sie QueueOptions
+        builder.Services.Configure<QueueOptions>(builder.Configuration.GetSection(QueueOptions.Queue));
+
+        // Registrieren Sie QueueProducer als Service mit einer Factory-Methode
+        builder.Services.AddSingleton<IQueueProducer, QueueProducer>(serviceProvider =>
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<QueueOptions>>();
+            var logger = serviceProvider.GetRequiredService<ILogger<QueueProducer>>();
+            return new QueueProducer(options, logger);
+        });
+
 
         var app = builder.Build();
 

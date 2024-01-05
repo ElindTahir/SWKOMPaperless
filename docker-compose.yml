@@ -43,9 +43,6 @@ services:
   
   rabbitmq:
     image: "rabbitmq:3-management"
-    environment:
-      RABBITMQ_DEFAULT_USER: "npaperless"
-      RABBITMQ_DEFAULT_PASS: "npaperless"
     ports:
       - "5672:5672" # RabbitMQ Server
       - "15672:15672" # RabbitMQ Management Console

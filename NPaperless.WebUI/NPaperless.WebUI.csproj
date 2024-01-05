@@ -32,6 +32,7 @@
     <ItemGroup>
       <ProjectReference Include="..\NPaperless.Services.DTOs\NPaperless.Services.DTOs.csproj" />
       <ProjectReference Include="..\NPaperless.Services.MinIO\NPaperless.Services.MinIO.csproj" />
+      <ProjectReference Include="..\NPaperless.Services.RabbitMQ\NPaperless.Services.RabbitMQ.csproj" />
     </ItemGroup>
 
     

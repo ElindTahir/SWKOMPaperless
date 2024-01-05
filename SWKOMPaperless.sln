@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPaperless.Services.RabbitM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPaperless.Services.MinIO", "NPaperless.Services.MinIO\NPaperless.Services.MinIO.csproj", "{CE55F095-D014-49ED-9083-D0B055756580}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NPaperless.Services.OCR", "NPaperless.Services.OCR\NPaperless.Services.OCR.csproj", "{A22DDFA0-BC4F-4A72-BBC9-052F6C703919}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,5 +65,9 @@ Global
 		{CE55F095-D014-49ED-9083-D0B055756580}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE55F095-D014-49ED-9083-D0B055756580}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE55F095-D014-49ED-9083-D0B055756580}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A22DDFA0-BC4F-4A72-BBC9-052F6C703919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A22DDFA0-BC4F-4A72-BBC9-052F6C703919}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A22DDFA0-BC4F-4A72-BBC9-052F6C703919}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A22DDFA0-BC4F-4A72-BBC9-052F6C703919}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

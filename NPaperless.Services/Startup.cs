@@ -29,9 +29,11 @@ using NPaperless.Services.OpenApi;
 using NPaperless.Services.Formatters;
 //logging
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NPaperless.Services.Controllers;
 using Minio;
 using Minio.DataModel.Args;
+using NPaperless.QueueLibrary;
 using NPaperless.Services.MinIO;
 
 namespace NPaperless.Services
@@ -133,8 +135,9 @@ namespace NPaperless.Services
                     .AddScoped<IRepository<Tag>, TagRepository>();
                 services
                     .AddScoped<IRepository<UserInfo>, UserInfoRepository>();
-                
-                
+
+
+
         }
 
         /// <summary>

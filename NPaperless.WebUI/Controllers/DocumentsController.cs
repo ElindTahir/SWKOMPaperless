@@ -7,6 +7,7 @@ using System.Text.Json;
 using NPaperless.Services.DTOs;
 using NPaperless.Services.MinIO;
 using Document = NPaperless.WebUI.Models.Document;
+using NPaperless.QueueLibrary;
 
 namespace NPaperless.WebUI.Controllers
 {
@@ -17,8 +18,10 @@ namespace NPaperless.WebUI.Controllers
         private readonly ILogger<DocumentsController> _logger;
         private readonly HttpClient _httpClient;
         private FileUpload _fileUpload;
+        private IQueueProducer _queueProducer;
 
-        public DocumentsController(ILogger<DocumentsController> logger, HttpClient httpClient, FileUpload fileUpload, IHttpClientFactory httpClientFactory)
+        public DocumentsController(ILogger<DocumentsController> logger, HttpClient httpClient, FileUpload fileUpload, 
+            IHttpClientFactory httpClientFactory, IQueueProducer queueProducer)
         {
             _logger = logger;
             //_httpClient = httpClientFactory.CreateClient("NPaperlessAPI"); // Ensure this client is configured in Startup.cs
@@ -27,6 +30,7 @@ namespace NPaperless.WebUI.Controllers
             //_httpClient.BaseAddress = new Uri("http://npaperless.services:8081/");
             _fileUpload = fileUpload;
             _httpClient = httpClientFactory.CreateClient("ServiceClient");
+            _queueProducer = queueProducer;
         }
 
         [HttpGet]
@@ -55,23 +59,26 @@ namespace NPaperless.WebUI.Controllers
             [FromForm] uint? correspondent,
             [FromForm] IEnumerable<IFormFile> document)
         {
-            
+
             // Get Document content
             var file = document.FirstOrDefault();
             if (file == null)
             {
                 return BadRequest("No file was uploaded");
             }
+
             // Get file content 
             var fileContent = new byte[file.Length];
             await file.OpenReadStream().ReadAsync(fileContent);
             
+            
             // Upload file to MinIO
             await _fileUpload.UploadFileAsync(file.OpenReadStream(), file.FileName);
-            
+
             // Create Document object
             var doc = new NPaperless.WebUI.Models.Document()
             {
+                
                 Correspondent = null,
                 DocumentType = 0,
                 StoragePath = 0,
@@ -87,14 +94,20 @@ namespace NPaperless.WebUI.Controllers
                 OriginalFileName = file.FileName,
                 ArchivedFileName = "title"
             };
-            
+
             var response = await _httpClient.PostAsJsonAsync("api/documents", doc);
+
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var createdDocument = JsonSerializer.Deserialize<Document>(content);
+                
+                Guid documentGuid = Guid.NewGuid();
+                _queueProducer.Send(file.FileName, documentGuid);
+                
                 _logger.LogInformation($"Created Document: {createdDocument.Id}");
                 return Created($"/api/documents/{createdDocument.Id}", createdDocument);
+                
             }
             else
             {
