@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using NPaperless.QueueLibrary; // Ersetzen Sie dies durch den tatsächlichen Namensraum Ihres QueueLibrary
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NPaperless.DataAccess.Entities;
+using NPaperless.DataAccess.Sql;
 using NPaperless.OCRLibrary;
 using NPaperless.Services.MinIO;
 using NPaperless.Services.OCR;
@@ -19,6 +21,10 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         // Fügen Sie den QueueConsumer-Dienst hinzu
         services.AddSingleton<IQueueConsumer, QueueConsumer>();
+        
+        // ... innerhalb der ConfigureServices-Methode ...
+        services.AddScoped<IRepository<Document>, DocumentRepository>();
+
 
         // Registrierung des OcrClient-Dienstes
         services.AddSingleton<IOcrClient, OcrClient>(sp => 

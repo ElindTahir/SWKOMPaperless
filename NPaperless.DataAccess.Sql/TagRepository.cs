@@ -36,6 +36,13 @@ public class TagRepository : IRepository<Tag>
         return item;
     }
     
+    public Tag UpdateContentByFileName(string fileName, string content)
+    {
+        // Your implementation logic to update UserInfo by fileName
+        // This is just a placeholder; you'll need to adapt it to your actual logic
+        throw new NotImplementedException();
+    }
+    
     public void Delete(Tag item)
     {
         _dbContext.Tags.Remove(item);

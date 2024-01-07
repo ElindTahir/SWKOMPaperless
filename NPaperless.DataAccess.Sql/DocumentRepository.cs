@@ -40,6 +40,26 @@ public class DocumentRepository : IRepository<Document>
         return item;
     }
     
+    public Document UpdateContentByFileName(string fileName, string content)
+    {
+        // Finden des Dokuments anhand des Dateinamens
+        var document = _dbContext.Documents.FirstOrDefault(doc => doc.OriginalFileName == fileName);
+
+        if (document == null)
+        {
+            throw new KeyNotFoundException("Dokument mit dem gegebenen Dateinamen wurde nicht gefunden.");
+        }
+
+        // Aktualisieren des Inhalts
+        document.Content = content;
+        document.Modified = DateTime.UtcNow; // Setzen des Änderungsdatums
+
+        _dbContext.Documents.Update(document);
+        _dbContext.SaveChanges();
+
+        return document;
+    }
+    
     public void Delete(Document item)
     {
         _dbContext.Documents.Remove(item);

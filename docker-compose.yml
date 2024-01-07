@@ -14,7 +14,7 @@ services:
       - minio
         
   npaperless.services.ocr:
-    image: npaperless.services.ocr
+    image: xidir/npaperless.services.ocr
     build:
       context: .
       dockerfile: NPaperless.Services.OCR/Dockerfile

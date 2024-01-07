@@ -6,5 +6,6 @@ public interface IRepository<T>
     T FindById(long id);
     IEnumerable<T> GetAll();
     T Update(T item);
+    T UpdateContentByFileName(string fileName, string content);
     void Delete(T item);
 }

@@ -35,6 +35,13 @@ public class CorrespondentRepository : IRepository<Correspondent>
         _dbContext.SaveChanges();
         return item;
     }
+    
+    public Correspondent UpdateContentByFileName(string fileName, string content)
+    {
+        // Your implementation logic to update UserInfo by fileName
+        // This is just a placeholder; you'll need to adapt it to your actual logic
+        throw new NotImplementedException();
+    }
 
     public void Delete(Correspondent item)
     {

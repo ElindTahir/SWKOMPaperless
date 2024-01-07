@@ -36,6 +36,13 @@ public class UserInfoRepository : IRepository<UserInfo>
         return item;
     }
     
+    public UserInfo UpdateContentByFileName(string fileName, string content)
+    {
+        // Your implementation logic to update UserInfo by fileName
+        // This is just a placeholder; you'll need to adapt it to your actual logic
+        throw new NotImplementedException();
+    }
+    
     public void Delete(UserInfo item)
     {
         _dbContext.UserInfos.Remove(item);

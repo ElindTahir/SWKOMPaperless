@@ -17,6 +17,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NPaperless.DataAccess.Entities\NPaperless.DataAccess.Entities.csproj" />
+      <ProjectReference Include="..\NPaperless.DataAccess.Sql\NPaperless.DataAccess.Sql.csproj" />
       <ProjectReference Include="..\NPaperless.OCRLibrary\NPaperless.OCRLibrary.csproj" />
       <ProjectReference Include="..\NPaperless.SearchLibrary\NPaperless.SearchLibrary.csproj" />
       <ProjectReference Include="..\NPaperless.Services.MinIO\NPaperless.Services.MinIO.csproj" />
