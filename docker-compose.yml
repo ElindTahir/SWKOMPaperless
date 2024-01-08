@@ -14,7 +14,7 @@ services:
       - minio
         
   npaperless.services.ocr:
-    image: xidir/npaperless.services.ocr
+    image: npaperless.services.ocr
     build:
       context: .
       dockerfile: NPaperless.Services.OCR/Dockerfile
@@ -24,8 +24,8 @@ services:
       - npaperless-network
     depends_on: 
       - rabbitmq
-      - npaperless.dataaccess.sql
-      - minio
+      #- npaperless.dataaccess.sql
+      #- minio
     restart: always
   
   npaperless.webui:

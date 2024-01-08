@@ -1,3 +1,5 @@
+using System.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NPaperless.QueueLibrary; // Ersetzen Sie dies durch den tatsächlichen Namensraum Ihres QueueLibrary
@@ -22,10 +24,15 @@ IHost host = Host.CreateDefaultBuilder(args)
         // Fügen Sie den QueueConsumer-Dienst hinzu
         services.AddSingleton<IQueueConsumer, QueueConsumer>();
         
+        services
+            .AddDbContext<NPaperlessDbContext>(options =>
+            {
+                options.UseNpgsql(hostContext.Configuration.GetConnectionString("NPaperlessDatabase"));
+            });
+        
         // ... innerhalb der ConfigureServices-Methode ...
         services.AddScoped<IRepository<Document>, DocumentRepository>();
-
-
+        
         // Registrierung des OcrClient-Dienstes
         services.AddSingleton<IOcrClient, OcrClient>(sp => 
         {

@@ -49,7 +49,7 @@ public class WorkerOCR : BackgroundService
                 _logger.LogInformation(ocrResult);
                 
                 // Der Dateiname muss aus der Nachricht extrahiert werden. Hier als Beispiel.
-                var fileName = ExtractFileNameFromMessage(e.Content);
+                var fileName = e.Content;
 
                 // Aktualisieren Sie den Inhalt des Dokuments in der Datenbank
                 _documentRepository.UpdateContentByFileName(fileName, ocrResult);
@@ -60,13 +60,6 @@ public class WorkerOCR : BackgroundService
         {
             _logger.LogError(ex, "Fehler beim Herunterladen oder Verarbeiten der Datei.");
         }
-    }
-    private string ExtractFileNameFromMessage(string messageContent)
-    {
-        // Implementieren Sie die Logik, um den Dateinamen aus dem Nachrichteninhalt zu extrahieren.
-        // Zum Beispiel könnte es eine JSON-Struktur sein, die Sie deserialisieren und dann den Dateinamen erhalten.
-        var message = JsonSerializer.Deserialize<MyMessageFormat>(messageContent);
-        return message.FileName;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
