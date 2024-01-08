@@ -27,7 +27,7 @@ namespace NPaperless.WebUI.Controllers
         [HttpGet(Name = "GetDocumentTypes")]
         public async Task<IActionResult> GetDocumentTypes()
         {
-            var response = await _httpClient.GetAsync("api/document_types");
+            /*var response = await _httpClient.GetAsync("api/document_types");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -38,7 +38,17 @@ namespace NPaperless.WebUI.Controllers
             {
                 _logger.LogError($"Error calling REST API: {response.ReasonPhrase}");
                 return StatusCode((int)response.StatusCode, response.ReasonPhrase);
-            }
+            }*/
+            var resultObject = new
+            {
+                count = 0,
+                next = (string)null, // Update as needed
+                previous = (string)null, // Update as needed
+                // all is empty List<int> because we don't have a way to get all document types
+                all = new List<int>(),
+                results = new List<DocumentType>()
+            };
+            return Ok(resultObject);
         }
 
         [HttpPost(Name = "CreateDocumentType")]

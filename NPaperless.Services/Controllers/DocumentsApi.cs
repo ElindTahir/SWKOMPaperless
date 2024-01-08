@@ -54,8 +54,17 @@ namespace NPaperless.Services.Controllers
         public IActionResult GetDocuments([FromQuery]int? page, [FromQuery]int? page_size, [FromQuery]string? query, [FromQuery]string ordering, [FromQuery(Name = "tags__id__all")]List<int>? tagsIdAll, [FromQuery(Name = "document_type__id")]int? documentTypeId, [FromQuery(Name = "correspondent__id")]int? correspondent__id, [FromQuery]bool? truncate_content)
         {
             _logger.LogInformation("Received request to get documents with query parameters.");
-            // Your logic here
-            throw new NotImplementedException();
+
+            var documents = _documentRepository.GetAll();
+            var resultObject = new
+            {
+                count = documents.Count(),
+                next = (string)null, // Update as needed
+                previous = (string)null, // Update as needed
+                all = documents.Select(d => d.Id).ToList(),
+                results = documents
+            };
+            return StatusCode(200, resultObject);
         }
 
         [HttpGet]

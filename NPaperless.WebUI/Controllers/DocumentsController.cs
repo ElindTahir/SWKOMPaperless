@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using System.Web;
 using NPaperless.Services.DTOs;
 using NPaperless.Services.MinIO;
 using Document = NPaperless.WebUI.Models.Document;
@@ -26,30 +27,62 @@ namespace NPaperless.WebUI.Controllers
             _logger = logger;
             //_httpClient = httpClientFactory.CreateClient("NPaperlessAPI"); // Ensure this client is configured in Startup.cs
             _httpClient = httpClient;
-            //Diese Zeile ist eine missgeburt
-            //_httpClient.BaseAddress = new Uri("http://npaperless.services:8081/");
+            _httpClient.BaseAddress = new Uri("http://npaperless.services/");
             _fileUpload = fileUpload;
             _httpClient = httpClientFactory.CreateClient("ServiceClient");
             _queueProducer = queueProducer;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetDocuments()
+        [HttpGet(Name = "GetDocuments")]
+        public async Task<IActionResult> GetDocuments(
+            [FromQuery] int? page,
+            [FromQuery] int? page_size,
+            [FromQuery] string? query,
+            [FromQuery] string ordering,
+            [FromQuery(Name = "tags__id__all")] List<int>? tagsIdAll,
+            [FromQuery(Name = "document_type__id")] int? documentTypeId,
+            [FromQuery(Name = "correspondent__id")] int? correspondent__id,
+            [FromQuery] bool? truncate_content
+        )
         {
             _logger.LogInformation("Fetching documents from API");
-            var response = await _httpClient.GetAsync("api/documents");
+            // set headers for request
+            var baseUrl = "api/documents";
+            var queryParameters = new List<string>();
+
+            if (page.HasValue)
+                queryParameters.Add($"page={page.Value}");
+            if (page_size.HasValue)
+                queryParameters.Add($"page_size={page_size.Value}");
+            if (!string.IsNullOrEmpty(query))
+                queryParameters.Add($"query={HttpUtility.UrlEncode(query)}");
+            if (!string.IsNullOrEmpty(ordering))
+                queryParameters.Add($"ordering={HttpUtility.UrlEncode(ordering)}");
+            if (tagsIdAll != null)
+                queryParameters.AddRange(tagsIdAll.Select(tagId => $"tags__id__all={tagId}"));
+            if (documentTypeId.HasValue)
+                queryParameters.Add($"document_type__id={documentTypeId.Value}");
+            if (correspondent__id.HasValue)
+                queryParameters.Add($"correspondent__id={correspondent__id.Value}");
+            if (truncate_content.HasValue)
+                queryParameters.Add($"truncate_content={truncate_content.Value.ToString().ToLower()}");
+
+            var requestUrl = $"{baseUrl}?{string.Join("&", queryParameters)}";
+
+            _logger.LogInformation($"Fetching documents from API: {requestUrl}");
+            var response = await _httpClient.GetAsync(requestUrl);
+            
+            
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var documents = JsonSerializer.Deserialize<List<Document>>(content);
-                return Ok(documents);
+
+                return Ok(content);
             }
-            else
-            {
-                _logger.LogError($"Error fetching documents: {response.ReasonPhrase}");
-                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
-            }
+            _logger.LogError($"Error fetching documents: {response.ReasonPhrase}");
+            return StatusCode((int)response.StatusCode, response.ReasonPhrase);
         }
+
 
         [HttpPost("post_document", Name = "UploadDocument")]
         public async Task<IActionResult> UploadDocument([FromForm] string? title,
