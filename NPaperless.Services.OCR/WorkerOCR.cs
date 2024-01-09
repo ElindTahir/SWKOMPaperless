@@ -2,7 +2,8 @@ using System.Text.Json;
 using NPaperless.OCRLibrary;
 using NPaperless.Services.MinIO;
 using NPaperless.DataAccess.Sql;
-using NPaperless.DataAccess.Entities;
+using NPaperless.SearchLibrary;
+using Document = NPaperless.DataAccess.Entities.Document;
 
 namespace NPaperless.Services.OCR;
 
@@ -20,12 +21,15 @@ public class WorkerOCR : BackgroundService
     private readonly IOcrClient _ocrClient;
     private readonly FileUpload _fileUpload; // Ihr Service zum Herunterladen der Datei
     private readonly IRepository<Document> _documentRepository;
+    // add elastic search
+    private readonly ElasticSearchIndex _elasticSearchIndex;
 
-    public WorkerOCR(ILogger<WorkerOCR> logger, 
+    public WorkerOCR(ILogger<WorkerOCR> logger,
         IQueueConsumer queueConsumer,
         IOcrClient ocrClient,
         FileUpload fileUpload,
-        IRepository<Document> documentRepository)
+        IRepository<Document> documentRepository,
+        ElasticSearchIndex elasticSearchIndex)
     {
         _logger = logger;
         _queueConsumer = queueConsumer;
@@ -33,7 +37,7 @@ public class WorkerOCR : BackgroundService
         _fileUpload = fileUpload; // Speichern Sie die Referenz zum Service
         _documentRepository = documentRepository;
         _queueConsumer.OnReceived += OnReceived;
-        
+        _elasticSearchIndex = elasticSearchIndex;
     }
     
     private async void OnReceived(object sender, QueueReceivedEventArgs e)
@@ -43,17 +47,20 @@ public class WorkerOCR : BackgroundService
         {
             using (var fileStream = await _fileUpload.DownloadFileAsync(e.Content))
             {
-                // Führen Sie hier die OCR-Verarbeitung durch
                 var ocrResult = _ocrClient.OcrPdf(fileStream);
-                // Führen Sie die gewünschten Aktionen mit dem OCR-Ergebnis durch
+                
                 _logger.LogInformation(ocrResult);
                 
-                // Der Dateiname muss aus der Nachricht extrahiert werden. Hier als Beispiel.
                 var fileName = e.Content;
 
-                // Aktualisieren Sie den Inhalt des Dokuments in der Datenbank
                 _documentRepository.UpdateContentByFileName(fileName, ocrResult);
                 
+                _elasticSearchIndex.AddDocumentAsync(new NPaperless.SearchLibrary.Document
+                {
+                    Content = ocrResult,
+                    Title = fileName
+                });
+                _logger.LogInformation($"OCR erfolgreich für Datei: {fileName}");
             }
         }
         catch (Exception ex)

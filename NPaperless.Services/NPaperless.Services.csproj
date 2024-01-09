@@ -44,6 +44,7 @@
     <ItemGroup>
       <ProjectReference Include="..\NPaperless.DataAccess.Entities\NPaperless.DataAccess.Entities.csproj" />
       <ProjectReference Include="..\NPaperless.DataAccess.Sql\NPaperless.DataAccess.Sql.csproj" />
+      <ProjectReference Include="..\NPaperless.SearchLibrary\NPaperless.SearchLibrary.csproj" />
       <ProjectReference Include="..\NPaperless.Services.DTOs\NPaperless.Services.DTOs.csproj" />
       <ProjectReference Include="..\NPaperless.Services.MinIO\NPaperless.Services.MinIO.csproj" />
       <ProjectReference Include="..\NPaperless.Services.RabbitMQ\NPaperless.Services.RabbitMQ.csproj" />

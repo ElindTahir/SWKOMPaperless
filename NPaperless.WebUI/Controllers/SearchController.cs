@@ -18,15 +18,18 @@ namespace NPaperless.WebUI.Controllers
         {
             _logger = logger;
             _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("http://npaperless.services:8081/");
         }
 
         [HttpGet("autocomplete/", Name = "AutoComplete")]
         public async Task<IActionResult> AutoComplete([FromQuery]string term, [FromQuery]int limit = 10)
         {
+            _logger.LogInformation($"AutoComplete search for term: {term} with limit: {limit}");
             var response = await _httpClient.GetAsync($"api/search/autocomplete?term={term}&limit={limit}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation($"AutoComplete search results: {content}");
                 var autoCompleteResults = JsonSerializer.Deserialize<List<string>>(content);
                 return Ok(autoCompleteResults);
             }

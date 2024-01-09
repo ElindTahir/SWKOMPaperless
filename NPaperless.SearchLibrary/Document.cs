@@ -1,3 +1,5 @@
+using Elastic.Clients.Elasticsearch;
+
 namespace NPaperless.SearchLibrary
 {
     public class Document

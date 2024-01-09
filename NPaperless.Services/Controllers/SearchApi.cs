@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NPaperless.Services.DTOs;
 using System;
 using System.Collections.Generic;
+using NPaperless.SearchLibrary;
 
 namespace NPaperless.Services.Controllers
 { 
@@ -10,10 +11,12 @@ namespace NPaperless.Services.Controllers
     public class SearchApiController : ControllerBase
     { 
         private readonly ILogger<SearchApiController> _logger;
+        private readonly ElasticSearchIndex _elasticSearchIndex;
 
-        public SearchApiController(ILogger<SearchApiController> logger)
+        public SearchApiController(ILogger<SearchApiController> logger, ElasticSearchIndex elasticSearchIndex)
         {
             _logger = logger;
+            _elasticSearchIndex = elasticSearchIndex;
         }
 
         [HttpGet]
@@ -38,8 +41,8 @@ namespace NPaperless.Services.Controllers
         // Simulate a search function
         private List<string> PerformSearch(string term, int? limit)
         {
-            // TODO: Implement your search logic here and return the results
-            return new List<string> { "Result1", "Result2" }; // This is just placeholder data
+            var results = _elasticSearchIndex.SearchDocumentAsync(term, limit ?? 10);
+            return results.Select(x => x.Title).ToList();
         }
     }
 }

@@ -34,7 +34,9 @@ using NPaperless.Services.Controllers;
 using Minio;
 using Minio.DataModel.Args;
 using NPaperless.QueueLibrary;
+using NPaperless.SearchLibrary;
 using NPaperless.Services.MinIO;
+using Document = NPaperless.DataAccess.Entities.Document;
 
 namespace NPaperless.Services
 {
@@ -135,6 +137,9 @@ namespace NPaperless.Services
                     .AddScoped<IRepository<Tag>, TagRepository>();
                 services
                     .AddScoped<IRepository<UserInfo>, UserInfoRepository>();
+                services
+                    .AddScoped<ElasticSearchIndex>();
+
 
 
 
